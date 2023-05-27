@@ -1,0 +1,25 @@
+*{
+  padding:0px;
+  margin: 0px;
+}
+.authcontainer{
+
+}
+.regimg{
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+}
+.headreglog{
+  font-family: 'Nunito Sans', sans-serif;
+}
+.regcontainer{
+  width:70%;
+  background: red;
+  margin-left: auto;
+  margin-top:50% ;
+  transform: translateY(-50%);
+}
+.regInput{
+  margin: 15px 0;
+}
