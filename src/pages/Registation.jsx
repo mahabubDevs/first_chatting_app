@@ -3,7 +3,8 @@ import {Grid,TextField,Button,Alert} from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import registration from "../assets/registration.png"
 import Headignforreglog from '../components/headignforreglog';
-import { getAuth, createUserWithEmailAndPassword,sendEmailVerification  } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword,sendEmailVerification,updateProfile } from "firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
 import {  useNavigate,Link } from 'react-router-dom';
 import {FaRegEyeSlash,FaEye} from 'react-icons/fa'
 
@@ -21,6 +22,7 @@ let initialValue = {
 const Registation = () => {
 
   const auth = getAuth();
+  const db = getDatabase();
 
   let navigate = useNavigate()
 
@@ -76,13 +78,26 @@ let handelSubmit = () =>{
   })
 
   createUserWithEmailAndPassword(auth,email,password).then((user)=>{
-    console.log(user)
-    sendEmailVerification(auth.currentUser)
-    .then(() => {
-      console.log("email sent")
+    
+    
+    updateProfile(auth.currentUser, {
+        displayName: values.fullName, photoURL: "https://i.ibb.co/R3pPR7Y/download.jpg"
+      }).then(() => {
+        sendEmailVerification(auth.currentUser)
+      .then(() => {
+        console.log("email sent")
+        console.log(user)
+
+        set(ref(db, 'users/'+user.user.uid ), {
+          username: values.fullName,
+          email: values.email,
+          profile_picture : user.user.photoURL
+        });
     });
+    })
+    
     setvalues({
-      fullName:" ",
+      fullName:"",
       email: "",
       password:"",
       loading: false
@@ -107,19 +122,19 @@ let handeleye = ()=>{
          <Headignforreglog className="headignreglog" title="Get started with easily register"/>
          <p>Free register and you can enjoy it</p>
          <div className='regInput'>
-          <TextField value={values.fullName} onChange={handelValus} name='fullName' id="outlined-basic" label="Name" variant="outlined" />
+          <TextField value={values.fullName} onChange={handelValus} type='text' name='fullName' id="outlined-basic" label="Name" variant="outlined" />
           </div>
-          { values.error.includes("Name") && <Alert severity="error">{values.error}</Alert> }
+          { values.error.includes("fullName") && <Alert severity="error">{values.error}</Alert> }
           
           <div className='regInput'>
          <TextField value={values.email} onChange={handelValus} name='email' id="outlined-basic" label="Email" variant="outlined" />
           </div>
-          { values.error.includes("Email") && <Alert severity="error">{values.error}</Alert> }
+          { values.error.includes("email") && <Alert severity="error">{values.error}</Alert> }
          
           <div className='regInput'>
           <TextField value={values.password} type={values.eye ? 'text' : 'password'} onChange={handelValus} name='password' id="outlined-basic" label="password" variant="outlined" />
          </div>
-         { values.error.includes("Password") && <Alert severity="error">{values.error}</Alert> }
+         { values.error.includes("password") && <Alert severity="error">{values.error}</Alert> }
 
          <div onClick={handeleye} className='eye'>
           {values.eye
