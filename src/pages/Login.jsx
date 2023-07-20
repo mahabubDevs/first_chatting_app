@@ -5,8 +5,11 @@ import { getAuth, signInWithEmailAndPassword,GoogleAuthProvider,signInWithPopup 
 import google from "../assets/google.png"
 import login from "../assets/lognin.png"
 import Headignforreglog from '../components/headignforreglog';
-import { Link,useNavigate } from 'react-router-dom';
+import { Link,json,useNavigate } from 'react-router-dom';
 import {  toast } from 'react-toastify';
+import { useDispatch } from 'react-redux'
+import { userdata } from '../slices/user/userSlice';
+
 
 
 
@@ -23,6 +26,8 @@ const Login = () => {
   const auth = getAuth();
   const provider = new GoogleAuthProvider();
   let navigate = useNavigate()
+  let dispatch = useDispatch()
+
   let [values,setvalues] = useState(initialValue)
   const notify = (msg) => toast(msg);
 
@@ -44,7 +49,6 @@ const Login = () => {
     })
   
     signInWithEmailAndPassword(auth,email,password).then((user)=>{
-      console.log(user)
       setvalues({
         email: "",
         password:"",
@@ -54,10 +58,11 @@ const Login = () => {
       if(!user.user.emailVerified){
         notify("please verified email")
       }else{
-
+        dispatch(userdata(user.user))
+        localStorage.setItem("user",JSON.stringify(user.user))
         navigate("/chatting/home")
       }
-      console.log(user)
+      
     }).catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
@@ -107,7 +112,7 @@ const Login = () => {
          :
          <>
             <Button onClick={handelSubmit} className='loginButton' variant="contained">Login to Continue  </Button>
-            <Button onClick={notify} className='loginButton' variant="contained">Login   </Button>
+            {/* <Button onClick={notify} className='loginButton' variant="contained">Login   </Button> */}
          </>
 
         }

@@ -152,3 +152,7 @@ ul,ol{
 .list:last-child{
     border-bottom: 0;
 }
+.username{
+    color: #f5f4f4;
+    margin-top: 10px;
+}

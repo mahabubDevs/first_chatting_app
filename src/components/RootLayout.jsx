@@ -4,11 +4,18 @@ import Grid from '@mui/material/Grid';
 import profile from '../assets/profile.png'
 import {AiFillHome,AiFillMessage,AiFillNotification,AiFillSetting,AiOutlineLogout} from 'react-icons/ai'
 import { Link,useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const RootLayout = () => {
 
   const location = useLocation();
-  console.log(location)
+  let userData = useSelector((state)=> state.loggedUser.loginUser)
+
+
+
+
+
+
   return (
     <>
         <Grid container spacing={2}>
@@ -16,6 +23,7 @@ const RootLayout = () => {
           <div className='navbar'>
             <div className='navcontainer'>
               <img  src={profile}/>
+              <h4 className='username'>{userData.displayName}</h4>
                 <ul>
                   <li>
                     <Link to="/chatting/home" className={location.pathname == "/chatting/home" ? 'active': 'icon'}  >

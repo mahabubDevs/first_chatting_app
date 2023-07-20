@@ -4,7 +4,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import registration from "../assets/registration.png"
 import Headignforreglog from '../components/headignforreglog';
 import { getAuth, createUserWithEmailAndPassword,sendEmailVerification,updateProfile } from "firebase/auth";
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, ref, set,push } from "firebase/database";
 import {  useNavigate,Link } from 'react-router-dom';
 import {FaRegEyeSlash,FaEye} from 'react-icons/fa'
 
@@ -122,7 +122,7 @@ let handeleye = ()=>{
          <Headignforreglog className="headignreglog" title="Get started with easily register"/>
          <p>Free register and you can enjoy it</p>
          <div className='regInput'>
-          <TextField value={values.fullName} onChange={handelValus} type='text' name='fullName' id="outlined-basic" label="Name" variant="outlined" />
+          <TextField value={values.fullName} onChange={handelValus} type='text' name='fullName' id="outlined-basic" label="Full Name" variant="outlined" />
           </div>
           { values.error.includes("fullName") && <Alert severity="error">{values.error}</Alert> }
           
