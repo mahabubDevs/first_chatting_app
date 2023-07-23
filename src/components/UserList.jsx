@@ -16,6 +16,7 @@ const UserList = () => {
 
     let [userList,setUserList] = useState([])
     let [friendRequest,setFriendRequest] = useState([])
+    let [friends,setFriends] = useState([])
 
 
     useEffect(()=>{
@@ -27,6 +28,20 @@ const UserList = () => {
             arr.push(item.val().whoreseveid+item.val().whosentid)
         })
         setFriendRequest(arr)
+        
+        });
+
+        // console.log(userList)
+    },[])
+    useEffect(()=>{
+        const usersRef = ref(db, 'friends/');
+        onValue(usersRef, (snapshot) => {
+            let arr = []
+        snapshot.forEach(item=>{
+
+            arr.push(item.val().whoreseveid+item.val().whosentid)
+        })
+        setFriends(arr)
         
         });
 
@@ -88,11 +103,11 @@ const UserList = () => {
              <div className="button">
                 {friendRequest.includes(item.id+auth.currentUser.uid)? 
                 
-                <Button onClick={()=>handelCancle(item)}  size='small' variant="contained">Cancle</Button>
+                <Button onClick={()=>handelCancle(item)}  size='small' variant="contained">+</Button>
                 : friendRequest.includes(auth.currentUser.uid+item.id)?(
                 <Button size='small' variant="contained">Pending</Button>
                 )
-                :
+                : friends.includes(auth.currentUser.uid+item.id)|| friends.includes(item.id+auth.currentUser.uid) ? <Button size='small' variant="contained" color='success'>Friend</Button> :
                 <Button onClick={handelFirendRequest(item)} size='small' variant="contained">+</Button>
 
                 }
