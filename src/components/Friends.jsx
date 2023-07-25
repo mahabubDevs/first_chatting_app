@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import profile from '../assets/profile.png'
 import Button from '@mui/material/Button';
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, onValue,remove,set,push } from "firebase/database";
 import { useSelector } from 'react-redux';
 
 const Friends = () => {
@@ -23,6 +23,34 @@ const Friends = () => {
         });
     })
 
+    let handelUnFriend = (item)=>{
+        remove(ref(db, 'friends/'+ item.id));
+    }
+
+    let handelBlock = (item)=>{
+            if(userData.uid == item.whosentid){
+                set(push(ref(db, 'block/')), {
+                   blocked: item.whoresevename,
+                   blockedname:item.whoreseveid,
+                   blockbyid:item.whosentid,
+                   blockbyname:item.whosentname
+                  }) .then(()=>{
+                    remove(ref(db, 'friends/' + item.id));
+                  })
+                
+            }else{
+                set(push(ref(db, 'block/')), {
+                    blocked: item.whosentname,
+                    blockedname:item.whosentid,
+                    blockbyid:item.whoreseveid,
+                    blockbyname: item.whoresevename
+                   }).then(()=>{
+                    remove(ref(db, 'friends/' + item.id));
+                  })
+            }
+    }
+
+
   return (
     <div className='box'>
     <h3>Friends </h3>
@@ -43,7 +71,8 @@ const Friends = () => {
             <p>Hi guys, Whats up!</p>
         </div>
         <div className="button">
-        <Button size='small' variant="contained">Block</Button>
+        <Button onClick={()=>handelBlock(item)}  size='small' variant="contained">Block</Button>
+        <Button onClick={()=>handelUnFriend(item)}  size='small' variant="contained" color='error'>UnFriend</Button>
         </div>
     </div>
     ))}

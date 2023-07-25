@@ -17,6 +17,7 @@ const UserList = () => {
     let [userList,setUserList] = useState([])
     let [friendRequest,setFriendRequest] = useState([])
     let [friends,setFriends] = useState([])
+    let [block, setBlock] = useState([]);
 
 
     useEffect(()=>{
@@ -47,6 +48,17 @@ const UserList = () => {
 
         // console.log(userList)
     },[])
+
+    useEffect(() => {
+        const usersRef = ref(db, "block/");
+        onValue(usersRef, (snapshot) => {
+          let arr = [];
+          snapshot.forEach((item) => {
+            arr.push(item.val().blockedid + item.val().blockbyid);
+          });
+          setBlock(arr);
+        });
+      }, []);
 
 
 
@@ -101,15 +113,14 @@ const UserList = () => {
                  <p>{item.email}</p>
              </div>
              <div className="button">
-                {friendRequest.includes(item.id+auth.currentUser.uid)? 
+                {friendRequest.includes(item.id+auth.currentUser.uid)? (
                 
-                <Button onClick={()=>handelCancle(item)}  size='small' variant="contained">+</Button>
-                : friendRequest.includes(auth.currentUser.uid+item.id)?(
+                <Button onClick={()=>handelCancle(item)}  size='small' variant="contained">cancel</Button>
+                ): friendRequest.includes(auth.currentUser.uid+item.id)?(
                 <Button size='small' variant="contained">Pending</Button>
-                )
-                : friends.includes(auth.currentUser.uid+item.id)|| friends.includes(item.id+auth.currentUser.uid) ? <Button size='small' variant="contained" color='success'>Friend</Button> :
-                <Button onClick={handelFirendRequest(item)} size='small' variant="contained">+</Button>
-
+                ): friends.includes(auth.currentUser.uid+item.id)|| friends.includes(item.id+auth.currentUser.uid) ? ( <Button size='small' variant="contained" color='success'>Friend</Button> 
+                ): block.includes(auth.currentUser.uid+item.id)|| block.includes(item.id+auth.currentUser.uid) ? ( <Button size='small' variant="contained" color='success'>block</Button> 
+                ):(<Button onClick={handelFirendRequest(item)} size='small' variant="contained">+</Button>)   
                 }
              </div>
          </div>
