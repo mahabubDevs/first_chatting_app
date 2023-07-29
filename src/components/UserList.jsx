@@ -115,7 +115,7 @@ const UserList = () => {
              <div className="button">
                 {friendRequest.includes(item.id+auth.currentUser.uid)? (
                 
-                <Button onClick={()=>handelCancle(item)}  size='small' variant="contained">cancel</Button>
+                <Button onClick={()=>handelCancle(item)}  size='small' variant="contained">Cancle</Button>
                 ): friendRequest.includes(auth.currentUser.uid+item.id)?(
                 <Button size='small' variant="contained">Pending</Button>
                 ): friends.includes(auth.currentUser.uid+item.id)|| friends.includes(item.id+auth.currentUser.uid) ? ( <Button size='small' variant="contained" color='success'>Friend</Button> 

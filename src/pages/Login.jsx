@@ -111,7 +111,7 @@ const Login = () => {
           </LoadingButton>
          :
          <>
-            <Button onClick={handelSubmit} className='loginButton' variant="contained">Login to Continue  </Button>
+            <Button style={{marginBottom:"10px",marginTop:"10px"}} onClick={handelSubmit} className='loginButton' variant="contained">Login to Continue  </Button>
             {/* <Button onClick={notify} className='loginButton' variant="contained">Login   </Button> */}
          </>
 

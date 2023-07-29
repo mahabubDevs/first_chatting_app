@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState ,useEffect} from 'react'
 import profile from '../assets/profile.png'
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
-
+import {Modal,TextField} from '@mui/material';
+import { useSelector } from 'react-redux';
+import { getDatabase, ref, set,push,onValue } from "firebase/database";
 
 const style = {
     position: 'absolute',
@@ -18,11 +19,65 @@ const style = {
     p: 4,
   };
 
-const Group = () => {
+  let groupData = {
+    groupname: "",
+    grouptagline:"",
+  }
 
-    const [open, setOpen] = React.useState(false);
+
+
+const Group = () => {
+  const db = getDatabase();
+
+  let userData = useSelector((state)=>state.loggedUser.loginUser)
+
+    let [groupInfo,setGroupInfo] = useState(groupData)
+   const [open, setOpen] = React.useState(false);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  let [reqList,setReqList] = useState([])
+
+  
+  let handelChange =(e)=>{
+    setGroupInfo({
+      ...groupInfo,
+      [e.target.name]: e.target.value,
+    })
+  }
+
+  let handelSubmit =()=>{
+    // console.log({
+    //   groupname:groupInfo.groupname,
+    //   grouptagline: groupInfo.grouptagline,
+    //   admin: userData.uid,
+    //   adminname: userData.displayName,
+
+    // })
+   
+    set(push(ref(db, 'groups/' )), {
+      groupname:groupInfo.groupname,
+      grouptagline: groupInfo.grouptagline,
+      admin: userData.uid,
+      adminname: userData.displayName,
+    }).then(()=>{
+      setOpen(false)
+    })
+  }
+
+  useEffect(()=>{
+    const friendRequestRef = ref(db, 'groups/');
+        onValue(friendRequestRef, (snapshot) => {
+        let arr = []
+        snapshot.forEach(item=>{
+
+            console.log(item.val().whoreseveid)
+            if(item.val().admin != userData.uid)
+            arr.push({...item.val(), id: item.key});
+        })
+        setReqList(arr)
+        });
+},[]);
 
 
   return (
@@ -37,25 +92,32 @@ const Group = () => {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
+            Creat your Group
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+          <Typography margin='dense' id="modal-modal-description" sx={{ mt: 2 }}>
+          <TextField onChange={handelChange} name='groupname' margin='dense' id="outlined-basic" label="Group Name" variant="outlined" />
+          <TextField onChange={handelChange} name='grouptagline' margin='dense' id="outlined-basic" label="Group tagline" variant="outlined" />
+          <br></br>
+          <Button onClick={handelSubmit} variant="contained">Contained</Button>
           </Typography>
         </Box>
       </Modal>
-        <div className="list">
-            <div className="img" >
-                <img src={profile}/>
-            </div>
-            <div className="details">
-                <h4>Friend Reunion</h4>
-                <p>Hi guys, Whats up!</p>
-            </div>
-            <div className="button">
-            <Button size='small' variant="contained">Join</Button>
-            </div>
+      {reqList.map(item=>(
+        <>
+            <div className="list">
+        <div className="img" >
+            <img src={profile}/>
         </div>
+        <div className="details">
+            <h4>{item.groupname}</h4>
+            <p>{item.grouptagline}</p>
+        </div>
+        <div className="button">
+        <Button size='small' variant="contained">Join</Button>
+        </div>
+    </div>
+        </>
+    ))}
 
     </div>
   )

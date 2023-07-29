@@ -11,6 +11,12 @@ const RootLayout = () => {
   const location = useLocation();
   let userData = useSelector((state)=> state.loggedUser.loginUser)
 
+  //logout part
+
+
+
+  //logout end
+
 
 
 
@@ -46,8 +52,8 @@ const RootLayout = () => {
                   </Link>
                   </li>
                   <li>
-                  <Link to="/chatting/logout" className={location.pathname == "/chatting/logout" ? 'active': 'icon'}>
-                      <AiOutlineLogout />
+                  <Link to="/chatting/logout"  className={location.pathname == "/chatting/logout" ? 'active': 'icon'}>
+                      <AiOutlineLogout  />
                   </Link>
                   </li>
                 </ul>

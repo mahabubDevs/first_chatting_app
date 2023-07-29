@@ -11,7 +11,7 @@ import {FaRegEyeSlash,FaEye} from 'react-icons/fa'
 
 
 let initialValue = {
-  fullName:" ",
+  fullName:"",
   email: "",
   password:"",
   loading:false,
@@ -51,14 +51,14 @@ let handelSubmit = () =>{
   if(!fullName){
     setvalues({
     ...values,
-    error: "Enter an Name"
+    error:"Enter an Name"
     })
     return
   }
   if(!email){
     setvalues({
     ...values,
-    error: "Enter an Email"
+    error:"Enter an Email"
     })
     return
   }
@@ -132,7 +132,7 @@ let handeleye = ()=>{
           { values.error.includes("email") && <Alert severity="error">{values.error}</Alert> }
          
           <div className='regInput'>
-          <TextField value={values.password} type={values.eye ? 'text' : 'password'} onChange={handelValus} name='password' id="outlined-basic" label="password" variant="outlined" />
+          <TextField  value={values.password} type={values.eye ? 'text' : 'password'} onChange={handelValus} name='password' id="outlined-basic" label="password" variant="outlined" />
          </div>
          { values.error.includes("password") && <Alert severity="error">{values.error}</Alert> }
 
@@ -146,12 +146,12 @@ let handeleye = ()=>{
 
          </div>
 
-         <Alert severity="info" style={{marginButtom:"20px"}}>
+         <Alert severity="info" style={{marginBottom:"20px"}}>
           Alrady Have An Account?<strong><Link to="/login">Login</Link></strong>
         </Alert>
 
          {values.loading ? 
-         <LoadingButton loading variant="outlined">
+         <LoadingButton  loading variant="outlined">
             Submit
           </LoadingButton>
          :
