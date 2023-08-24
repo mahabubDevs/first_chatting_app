@@ -161,7 +161,7 @@ const MyGroup = () => {
                         {" — want's to join your group"}
                         <br/>
                         <Button size='small' variant="contained" color='success'>Accept</Button>
-                    <Button onClick={()=>handleGroupDelete(item)}  size='small' variant="contained" color='error'>Delete</Button>
+                    <Button onClick={()=>handleGroupDelete(item)}  size='small' variant="contained" color='success'>Delete</Button>
                         </React.Fragment>
                     }
                     />
