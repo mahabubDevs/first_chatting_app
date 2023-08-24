@@ -36,7 +36,8 @@ const Group = () => {
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  let [reqList,setReqList] = useState([])
+  let [groupList,setGroupList] = useState([])
+  let [groupMemberList,setGroupMemberList] = useState([])
 
   
   let handelChange =(e)=>{
@@ -73,12 +74,38 @@ const Group = () => {
 
             console.log(item.val().whoreseveid)
             if(item.val().admin != userData.uid)
-            arr.push({...item.val(), id: item.key});
+            arr.push({...item.val(), groupid: item.key});
         })
-        setReqList(arr)
+        setGroupList(arr)
         });
 },[]);
 
+let handleGroupJoin = (item) => {
+  console.log(item)
+  set(push(ref(db, 'grouprequest' )), {
+    admin: item.admin,
+    adminname: item.adminname,
+    groupid: item.groupid,
+    groupname: item.groupname,
+    userid: userData.uid,
+    username: userData.displayName,
+    
+  })
+  
+};
+
+useEffect(() => {
+  const groupRef = ref(db, "grouprequest");
+  onValue(groupRef, (snapshot) => {
+    let arr = [];
+    snapshot.forEach((item) => {
+      if (item.val().userid == userData.uid) {
+        arr.push(item.val().groupid);
+      }
+    });
+    setGroupMemberList(arr);
+  });
+}, []);
 
   return (
     <div className='box'>
@@ -102,19 +129,43 @@ const Group = () => {
           </Typography>
         </Box>
       </Modal>
-      {reqList.map(item=>(
+      {groupList.map(item=>(
+        
+      
         <>
             <div className="list">
         <div className="img" >
             <img src={profile}/>
         </div>
         <div className="details">
+            <p style={{fontSize:"12px"}}>{item.adminname}</p>
             <h4>{item.groupname}</h4>
             <p>{item.grouptagline}</p>
         </div>
         <div className="button">
-        <Button size='small' variant="contained">Join</Button>
-        </div>
+                {groupMemberList.indexOf(item.groupid) != -1 ? (
+                  <>
+                    <Button size="small" variant="contained">
+                      Request Send
+                    </Button>
+                    <Button
+                      onClick={() => handleGroupDelete(item)}
+                      size="small"
+                      variant="contained"
+                    >
+                      Cancel
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    onClick={() => handleGroupJoin(item)}
+                    size="small"
+                    variant="contained"
+                  >
+                    Join
+                  </Button>
+                )}
+              </div>
     </div>
         </>
     ))}
@@ -124,3 +175,11 @@ const Group = () => {
 }
 
 export default Group
+
+
+
+
+
+
+
+
