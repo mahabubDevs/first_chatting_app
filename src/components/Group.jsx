@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import {Modal,TextField} from '@mui/material';
 import { useSelector } from 'react-redux';
-import { getDatabase, ref, set,push,onValue } from "firebase/database";
+import { getDatabase, ref, set,push,onValue,remove } from "firebase/database";
 
 const style = {
     position: 'absolute',
@@ -106,6 +106,21 @@ useEffect(() => {
     setGroupMemberList(arr);
   });
 }, []);
+
+
+let handleGroupDelete =(g)=>{
+  const groupRef = ref(db, "grouprequest");
+  let gid = " ";
+  onValue(groupRef, (snapshot) => {
+ 
+    snapshot.forEach((item) => {
+      if (item.val().userid == userData.uid && g.groupid == item.val().groupid) {
+        gid = item.key;
+      }
+    });
+  });
+  remove(ref(db, "grouprequest/" + gid));
+}
 
   return (
     <div className='box'>
