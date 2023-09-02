@@ -6,6 +6,8 @@ import Friends from '../components/Friends';
 import MyGroup from '../components/MyGroup';
 import UserList from '../components/UserList';
 import BlockUser from '../components/BlockUser';
+import Chatbox from '../components/Chatbox';
+
 
 const Message = () => {
   return (
@@ -18,8 +20,7 @@ const Message = () => {
     </Grid>
     <Grid item xs={8}>
       <div>
-       
-        <MyGroup/>
+      <Chatbox/>
       </div>
     </Grid>
   

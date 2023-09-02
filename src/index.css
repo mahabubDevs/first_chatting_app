@@ -157,3 +157,163 @@ ul,ol{
     color: #f5f4f4;
     margin-top: 10px;
 }
+
+.chatbox{
+    width: 95%;
+    border-radius: 25px;
+    padding: 25px;
+    box-sizing: border-box;
+    margin: auto;
+    height: 100vh
+    ;
+    -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+}
+
+.msgprofile{
+    display: flex;
+    align-items: center;
+    column-gap: 15px;
+    border-bottom: 2px solid rgb(121, 120, 120);
+ 
+}
+
+.signal{
+    position: relative;
+}
+.round{
+    width: 13px;
+    height: 13px;
+    background: green;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 4px;
+    right: 5px;
+    -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+}
+.msgbox{
+    height: 80vh;
+    overflow-y: scroll;
+}
+
+
+
+.msg{
+    display: flex;
+    flex-direction: column;
+}
+.getmsg{
+    background: #F1F1F1;
+    display: inline-block;
+    padding: 13px 52px;
+    border-radius: 10px;
+    font-weight: bold;
+    margin: 10px;
+    align-self: flex-start;
+}
+.getimg >div> img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+.getimg{
+    background: #F1F1F1;
+    display: inline-block;
+    padding: 7px;
+    border-radius: 10px;
+    font-weight: bold;
+    margin: 10px;
+    align-self: flex-start;
+    width: 250px;
+    height: 250px;
+}
+.getimg +.time{
+    color: rgb(0, 0, 0,.65);
+    align-self: flex-start;
+}
+.time{
+    color: rgb(0, 0, 0,.65);
+    
+}
+.sendmsg{
+    background: #5F35F5;
+    display: inline-block;
+    padding: 13px 52px;
+    border-radius: 10px;
+    font-weight: bold;
+    margin: 10px;
+    color: white;
+    align-self: flex-end;
+}
+
+.sendmsg +.time{
+    color: rgb(0, 0, 0,.65);
+    align-self: flex-end;
+}
+.sendimg > div>img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+.sendimg{
+    background: #5F35F5;
+    display: inline-block;
+    padding: 7px;
+    border-radius: 10px;
+    font-weight: bold;
+    margin: 10px;
+    align-self: flex-end;
+    width: 250px;
+    height: 250px;
+}
+.sendimg +.time{
+    color: rgb(0, 0, 0,.65);
+    align-self: flex-end;
+}
+.getimg> div{
+    height: 100%;
+}
+.sendimg> div{
+    height: 100%;
+}
+
+.getaudio{
+    
+    display: inline-block;
+    margin: 10px;
+    align-self: flex-start;
+}
+.sendaudio +.time{
+    color: rgb(0, 0, 0,.65);
+    align-self: flex-end;
+}
+.sendaudio{
+   
+    display: inline-block;
+    margin: 10px;
+    align-self: flex-end;
+}
+.msgwrite{
+    width: 90%;
+    background: #F1F1F1;
+    border: 0;
+    padding: 15px;
+    border-radius: 10px;
+}
+.msgcontainer{
+    display: flex;
+    border-top: 2px solid black;
+    padding: 25px 0;
+}
+.msgcon{
+    width: 100%;
+   
+    border: 0;
+    border-radius: 10px;
+}
