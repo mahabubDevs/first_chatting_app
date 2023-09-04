@@ -21,7 +21,41 @@ const Friends = ({button}) => {
                 arr.push({...item.val(), id: item.key});
             }
         })
-        setFriends(arr)
+        setFriends(arr);
+        if (arr[0].whosentid == userData.uid){
+          dispatch(
+            activeChat({
+              type: "singlemsg",
+              name: arr[0].whoresevename,
+              id: arr[0].whoreseveid,
+            })
+          );
+          localStorage.setItem(
+            "activeChat",
+            JSON.stringify({
+              type: "singlemsg",
+              name: arr[0].whoresevename,
+              id: arr[0].whoreseveid,
+            })
+          )
+        }else{
+          dispatch(
+            activeChat({
+              type: "singlemsg",
+              name: arr[0].whosentname,
+              id: arr[0].whosentid,
+            })
+          );
+          localStorage.setItem(
+            "activeChat",
+            JSON.stringify({
+              type: "singlemsg",
+              name: arr[0].whosentname,
+              id: arr[0].whosentid,
+            })
+          );
+        }
+        
         });
     })
 

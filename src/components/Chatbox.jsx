@@ -1,5 +1,5 @@
 import { updateProfile } from 'firebase/auth'
-import React from 'react'
+import React, { useState } from 'react'
 import profile from '../assets/profile.png'
 import registration from '../assets/registration.png'
 import ModalImage from "react-modal-image";
@@ -8,7 +8,25 @@ import { useSelector } from 'react-redux';
 
 const Chatbox = () => {
 
+  let userData = useSelector((state)=> state.loggedUser.loginUser)
   let activeChat = useSelector((state) => state.activeChat.activeChat);
+  let [msg, setMag] = useState("")
+  let handelChat = ()=>{
+    // console.log(userData)
+    // console.log(activeChat)
+    // console.log(msg)
+    let data = {
+      whosentname : userData.displayName,
+      whosentid: userData.uid,
+      whoresevename: activeChat.name,
+      whoreseveid:activeChat.id,
+      msg:msg,
+    }
+    console.log(data)
+  }
+
+
+
   return (
     <div className='chatbox'>
       <div className='msgprofile'>
@@ -85,9 +103,9 @@ const Chatbox = () => {
 
       <div className='msgcontainer'>
         <div className='msgcon'>
-        <input className='msgwrite' />
+        <input onChange={(e)=>setMag(e.target.value)} className='msgwrite' />
         </div>
-        <Button variant='contained'>Send</Button>
+        <Button onClick={handelChat} variant='contained'>Send</Button>
       </div>
     </div>
   )
