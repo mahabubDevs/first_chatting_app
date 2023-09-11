@@ -57,7 +57,7 @@ const Friends = ({button}) => {
         }
         
         });
-    })
+    },[])
 
     let handelUnFriend = (item)=>{
         remove(ref(db, 'friends/'+ item.id));

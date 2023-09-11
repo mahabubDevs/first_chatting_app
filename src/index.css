@@ -214,6 +214,8 @@ ul,ol{
     font-weight: bold;
     margin: 10px;
     align-self: flex-start;
+    max-width: 70%;
+    word-wrap: break-word;
 }
 .getimg >div> img{
     width: 100%;
@@ -249,6 +251,8 @@ ul,ol{
     margin: 10px;
     color: white;
     align-self: flex-end;
+    max-width: 70%;
+    word-wrap: break-word;
 }
 
 .sendmsg +.time{
