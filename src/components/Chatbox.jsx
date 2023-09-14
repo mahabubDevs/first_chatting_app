@@ -8,16 +8,40 @@ import { useSelector } from 'react-redux';
 import moment from 'moment/moment';
 import { getDatabase, ref, set, push, onValue } from "firebase/database";
 import { counterSlice } from '../slices/user/userSlice';
+import {FaRegImages} from "react-icons/fa"
+import { getStorage, ref as imgref,uploadBytesResumable, getDownloadURL  } from "firebase/storage";
+import PropTypes from 'prop-types';
+import LinearProgress from '@mui/material/LinearProgress';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import EmojiPicker from 'emoji-picker-react';
+
+function LinearProgressWithLabel(props) {
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Box sx={{ width: '100%', mr: 1 }}>
+        <LinearProgress variant="determinate" {...props} />
+      </Box>
+      <Box sx={{ minWidth: 35 }}>
+        <Typography variant="body2" color="text.secondary">{`${Math.round(
+          props.value,
+        )}%`}</Typography>
+      </Box>
+    </Box>
+  );
+}
 
 const Chatbox = () => {
 
   const db = getDatabase();
+  const storage = getStorage();
   let userData = useSelector((state)=> state.loggedUser.loginUser)
   let activeChat = useSelector((state) => state.activeChat.activeChat);
 
-  let [msg, setMag] = useState("")
+  let [msg, setMsg] = useState("")
   let [groupmsglist, setGroupMsgList] = useState("")
   let [msglist, setMsglist] = useState([])
+  let [progress, setProgress] = useState([0])
 
 
 
@@ -80,10 +104,9 @@ useEffect(()=>{
   onValue(msgRef, (snapshot) => {
     let arr = [];
     snapshot.forEach(item=>{
-      console.log(item.val())
-      if(item.val().whosentid == userData.uid && item.val().whoreseveid == activeChat.id || item.val().whosentid == activeChat.id && item.val().whoreseveid == userData.uid ){
-        arr.push(item.val())
-      }
+      
+      
+      arr.push(item.val())
     })
     setGroupMsgList(arr)
   });
@@ -119,8 +142,63 @@ let handelKeyPress = (e)=>{
 
 let handelMsg=(e)=>{
   console.log(e)
-  setMag(e.target.value)
+  setMsg(e.target.value)
 }
+
+
+let handleImageChange = (e)=>{
+  console.log(e.target.files[0])
+  const storageRef = imgref(storage, `images/${e.target.files[0].name}`);
+  const uploadTask = uploadBytesResumable(storageRef, e.target.files[0]);
+  uploadTask.on('state_changed', 
+  (snapshot) => {
+   
+    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    console.log('Upload is ' + progress + '% done');
+    setProgress(progress)
+   
+
+  }, 
+  (error) => {
+  
+  }, 
+  () => {
+    
+    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+      setProgress(0)
+        if(activeChat.type=="groupmsg"){
+    
+        set(push(ref(db, 'singlemsg/')), {
+          whosentname : userData.displayName,
+        whosentid: userData.uid,
+        whoresevename: activeChat.name,
+        whoreseveid:activeChat.id,
+        img: downloadURL,
+        date: `${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDay()} ${new Date().getHours()}:${new Date().getMinutes()}`
+         }) 
+  
+    }else{
+     
+        set(push(ref(db, 'singlemsg/')), {
+          whosentname : userData.displayName,
+        whosentid: userData.uid,
+        whoresevename: activeChat.name,
+        whoreseveid:activeChat.id,
+       img: downloadURL,
+        date: `${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDay()} ${new Date().getHours()}:${new Date().getMinutes()}`
+         }) 
+     
+    }
+    });
+  }
+);
+}
+
+let handelEmoji = (emo)=>{
+  console.log(emo.emoji)
+  setMsg(msg + emo.emoji + msg)
+}
+
 
   return (
     <div className='chatbox'>
@@ -193,26 +271,86 @@ let handelMsg=(e)=>{
           item.whosentid == userData.uid && item.whoreseveid == activeChat.id
           ?
           <div className='msg'>
-          <p className='sendmsg'>{item.msg}</p>
+           {item.msg ? 
+               (  <p className='sendmsg'>
+            {item.msg}
+            
+            </p>)
+            :
+            ( <p className='sendimg'> 
+         
+        <ModalImage
+        small={item.img}
+        large={item.img}
+        
+      />;
+       </p>)
+            }
           <p className='time'>{moment(item.date, "YYYYMMDD hh:mm").fromNow()} </p>
           </div>
           : item.whosentid == activeChat.id && item.whoreseveid == userData.uid &&
           <div className='msg'>
-          <p className='getmsg'>{item.msg}</p>
+              {item.msg ? 
+                 (<p className='getmsg'>
+            {item.msg}
+            
+            </p>)
+            :
+            ( <p className='getimg'> 
+         
+        <ModalImage
+        small={item.img}
+        large={item.img}
+        
+      />
+       </p>)
+            }
           <p className='time'>{moment(item.date, "YYYYMMDD hh:mm").fromNow()} </p>
           </div>
         ))
         :
-        groupmsglistgit .map(item=>(
+        groupmsglist .map(item=>(
           item.whosentid == userData.uid && item.whoreseveid == activeChat.id
           ?
           <div className='msg'>
-          <p className='sendmsg'>{item.msg}</p>
+           {item.msg ? 
+               (  <p className='sendmsg'>
+            {item.msg}
+            
+            </p>)
+            :
+            ( <p className='sendimg'> 
+         
+        <ModalImage
+        small={item.img}
+        large={item.img}
+        
+      />;
+       </p>)
+            }
           <p className='time'>{moment(item.date, "YYYYMMDD hh:mm").fromNow()} </p>
           </div>
-          : item.whosentid == activeChat.id && item.whoreseveid == userData.uid &&
+          : item.whoreseveid == activeChat.id && 
+
           <div className='msg'>
-          <p className='getmsg'>{item.msg}</p>
+
+            {item.msg ? 
+                 (<p className='getmsg'>
+            {item.msg}
+            
+            </p>)
+            :
+            ( <p className='getimg'> 
+         
+        <ModalImage
+        small={item.img}
+        large={item.img}
+        
+      />
+       </p>)
+            }
+
+         
           <p className='time'>{moment(item.date, "YYYYMMDD hh:mm").fromNow()} </p>
           </div>
         ))
@@ -222,10 +360,21 @@ let handelMsg=(e)=>{
 
       <div className='msgcontainer'>
         <div className='msgcon'>
-        <input onChange={handelMsg} className='msgwrite' onKeyUp={handelKeyPress} />
+        <input onChange={handelMsg} className='msgwrite' onKeyUp={handelKeyPress} value={msg} />
+        <label>
+        <FaRegImages style={{position:"absolute", top:"15px",rign:"5px"}}/>
+        <input onChange={handleImageChange} type="file"  hidden/>
+        </label>
         </div>
+        
         <Button onClick={handelChat} variant='contained'>Send</Button>
       </div>
+      {progress != 0 &&
+      <Box sx={{ width: '100%' }}>
+      <LinearProgressWithLabel value={progress} />
+    </Box>
+    }
+     <EmojiPicker onEmojiClick={handelEmoji} />
     </div>
   )
 }
