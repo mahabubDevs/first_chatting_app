@@ -322,3 +322,23 @@ ul,ol{
     border-radius: 10px;
     position: relative;
 }
+.emojiholer{
+    position: absolute;
+    bottom: 47px;
+    right: 0;
+}
+.audioset{
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    top: 15px;
+    right: 0;
+}
+.audio-recorder{
+    position: absolute;
+    z-index: 1;
+    top: 2px;
+    right: 60px;
+    background-color: transparent !important;
+    box-shadow: 0 2px 5px transparent !important;
+}

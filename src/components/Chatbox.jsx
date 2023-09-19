@@ -9,13 +9,14 @@ import moment from 'moment/moment';
 import { getDatabase, ref, set, push, onValue } from "firebase/database";
 import { counterSlice } from '../slices/user/userSlice';
 import {FaRegImages} from "react-icons/fa"
+import {BsFillEmojiLaughingFill} from "react-icons/bs"
 import { getStorage, ref as imgref,uploadBytesResumable, getDownloadURL  } from "firebase/storage";
 import PropTypes from 'prop-types';
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import EmojiPicker from 'emoji-picker-react';
-
+import { AudioRecorder } from 'react-audio-voice-recorder';
 function LinearProgressWithLabel(props) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -42,6 +43,15 @@ const Chatbox = () => {
   let [groupmsglist, setGroupMsgList] = useState("")
   let [msglist, setMsglist] = useState([])
   let [progress, setProgress] = useState([0])
+  let [showemo, setShowemo] = useState([false])
+  let [audiourl, setAudiourl] = useState()
+
+  const addAudioElement = (blob) => {
+    const url = URL.createObjectURL(blob);
+    setAudiourl(url)
+
+    
+  };
 
 
 
@@ -361,20 +371,46 @@ let handelEmoji = (emo)=>{
       <div className='msgcontainer'>
         <div className='msgcon'>
         <input onChange={handelMsg} className='msgwrite' onKeyUp={handelKeyPress} value={msg} />
+        {audiourl && (
+        <audio className='audioset' src={audiourl} controls>
+          
+        </audio>
+        )}
         <label>
-        <FaRegImages style={{position:"absolute", top:"15px",rign:"5px"}}/>
+        <FaRegImages style={{position:"absolute", top:"15px",right:"5px"}}/>
+       
         <input onChange={handleImageChange} type="file"  hidden/>
         </label>
+        <BsFillEmojiLaughingFill onClick={()=>setShowemo(!showemo)} style={{position:"absolute", top:"15px",right:"30px" }}/>
+
+        <AudioRecorder 
+      onRecordingComplete={addAudioElement}
+      audioTrackConstraints={{
+        noiseSuppression: true,
+        echoCancellation: true,
+      }} 
+      downloadOnSavePress={false}
+      downloadFileExtension="webm"
+    />
+
+        {showemo && (
+        <div className='emojiholer'>
+          <EmojiPicker onEmojiClick={handelEmoji} />
+        </div>
+        )}
         </div>
         
         <Button onClick={handelChat} variant='contained'>Send</Button>
+          {audiourl && (
+        <Button onClick={()=>setAudiourl("")} variant='contained'>Cancle</Button>
+  )}
       </div>
       {progress != 0 &&
       <Box sx={{ width: '100%' }}>
       <LinearProgressWithLabel value={progress} />
     </Box>
     }
-     <EmojiPicker onEmojiClick={handelEmoji} />
+     
     </div>
   )
 }
