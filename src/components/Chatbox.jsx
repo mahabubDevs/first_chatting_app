@@ -45,10 +45,12 @@ const Chatbox = () => {
   let [progress, setProgress] = useState([0])
   let [showemo, setShowemo] = useState([false])
   let [audiourl, setAudiourl] = useState()
+  let [audiourlup, setAudiourlup] = useState()
 
   const addAudioElement = (blob) => {
     const url = URL.createObjectURL(blob);
     setAudiourl(url)
+    setAudiourlup(blob)
 
     
   };
@@ -176,6 +178,8 @@ let handleImageChange = (e)=>{
     
     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
       setProgress(0)
+      setAudiourl("")
+      setAudiourlup("")
         if(activeChat.type=="groupmsg"){
     
         set(push(ref(db, 'singlemsg/')), {
@@ -209,6 +213,55 @@ let handelEmoji = (emo)=>{
   setMsg(msg + emo.emoji + msg)
 }
 
+
+let handelAudioChat=()=>{
+  const storageRef = imgref(storage, audiourl);
+  const uploadTask = uploadBytesResumable(storageRef, audiourlup);
+  uploadTask.on('state_changed', 
+  (snapshot) => {
+   
+    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    console.log('Upload is ' + progress + '% done');
+    setProgress(progress)
+   
+
+  }, 
+  (error) => {
+  
+  }, 
+  () => {
+    
+    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+      setProgress(0)
+      setAudiourl("")
+      setAudiourlup("")
+        if(activeChat.type=="groupmsg"){
+    
+        set(push(ref(db, 'singlemsg/')), {
+          whosentname : userData.displayName,
+        whosentid: userData.uid,
+        whoresevename: activeChat.name,
+        whoreseveid:activeChat.id,
+        audio: downloadURL,
+        date: `${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDay()} ${new Date().getHours()}:${new Date().getMinutes()}`
+         }) 
+  
+    }else{
+     
+        set(push(ref(db, 'singlemsg/')), {
+          whosentname : userData.displayName,
+        whosentid: userData.uid,
+        whoresevename: activeChat.name,
+        whoreseveid:activeChat.id,
+       audio: downloadURL,
+        date: `${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDay()} ${new Date().getHours()}:${new Date().getMinutes()}`
+         }) 
+     
+    }
+    });
+  }
+);
+}
 
   return (
     <div className='chatbox'>
@@ -286,7 +339,7 @@ let handelEmoji = (emo)=>{
             {item.msg}
             
             </p>)
-            :
+            : item.msg ?
             ( <p className='sendimg'> 
          
         <ModalImage
@@ -295,7 +348,13 @@ let handelEmoji = (emo)=>{
         
       />;
        </p>)
-            }
+       :
+        
+             <p className='sendaudio'><audio src={item.audio} controls></audio></p>
+        
+       
+       }
+
           <p className='time'>{moment(item.date, "YYYYMMDD hh:mm").fromNow()} </p>
           </div>
           : item.whosentid == activeChat.id && item.whoreseveid == userData.uid &&
@@ -305,7 +364,7 @@ let handelEmoji = (emo)=>{
             {item.msg}
             
             </p>)
-            :
+            : item.msg ?
             ( <p className='getimg'> 
          
         <ModalImage
@@ -314,6 +373,11 @@ let handelEmoji = (emo)=>{
         
       />
        </p>)
+       :
+       
+          <p className='getaudio'><audio controls></audio></p>
+       
+     
             }
           <p className='time'>{moment(item.date, "YYYYMMDD hh:mm").fromNow()} </p>
           </div>
@@ -328,7 +392,7 @@ let handelEmoji = (emo)=>{
             {item.msg}
             
             </p>)
-            :
+            : item.img ?
             ( <p className='sendimg'> 
          
         <ModalImage
@@ -337,6 +401,11 @@ let handelEmoji = (emo)=>{
         
       />;
        </p>)
+       :
+     
+          <p className='sendaudio'><audio controls></audio></p>
+     
+     
             }
           <p className='time'>{moment(item.date, "YYYYMMDD hh:mm").fromNow()} </p>
           </div>
@@ -349,7 +418,7 @@ let handelEmoji = (emo)=>{
             {item.msg}
             
             </p>)
-            :
+            : item.img ?
             ( <p className='getimg'> 
          
         <ModalImage
@@ -357,7 +426,11 @@ let handelEmoji = (emo)=>{
         large={item.img}
         
       />
-       </p>)
+       </p>) :
+       <>
+          <p className='getaudio'><audio controls></audio></p>
+       
+       </>
             }
 
          
@@ -400,9 +473,15 @@ let handelEmoji = (emo)=>{
         )}
         </div>
         
+        {!audiourl && (
         <Button onClick={handelChat} variant='contained'>Send</Button>
+        )}
+        
           {audiourl && (
-        <Button onClick={()=>setAudiourl("")} variant='contained'>Cancle</Button>
+            <>
+                <Button onClick={handelAudioChat} variant='contained'>Send Audio</Button>
+                <Button onClick={()=>setAudiourl("")} variant='contained'>Cancle</Button>
+            </>
   )}
       </div>
       {progress != 0 &&
