@@ -366,3 +366,15 @@ ul,ol{
     background-color: transparent !important;
     box-shadow: 0 2px 5px transparent !important;
 }
+.imgbox{
+    width: 100px !important;
+    height: 100px !important;
+    border-radius: 50%;
+  }
+  
+  .img-preview {
+    width: 100px !important;
+    height: 100px !important;
+    overflow: hidden;
+    border-radius: 50%;
+  }
